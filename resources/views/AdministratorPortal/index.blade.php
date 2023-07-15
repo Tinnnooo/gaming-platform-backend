@@ -1,55 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Administrator Portals</title>
+@extends('AdministratorPortal.layouts.main')
 
-    <link rel="stylesheet" href="./css/AdministratorPortal.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <p>Administrator Portal</p>
-        </div>
-    </nav>
 
-    <main class="container">
-        <form method="POST" action="{{ route('admin.login.submit') }}" class="container-form">
+@section('main')
+    <main class="container d-flex  justify-content-center min-vh-100 align-items-center" >
+        <form method="POST" action="{{ route('admin.login.submit') }}" class="border p-4 rounded border-primary">
             @csrf
 
-            <div class="form-title">
-                <h3>Admin Login</h3>
+            <div class="text-center mb-2">
+                <h3 class="fw-bold text-primary ">Admin Login</h3>
             </div>
 
             @if (session()->has('loginError'))
-                <div class="error">
+                <div class="text-danger mt-2">
                     {{ session('loginError') }}
                 </div>
             @endif
 
 
-            <div class="form-input">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Username" value="{{ old('username') }}" />
+            <div class="mt-2">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" value="{{ old('username') }}" class="form-control" />
                 @if ($errors->has('username'))
-                    <p class="error-field">{{ $errors->first('username') }}</p>
+                    <p class="text-danger text-center">{{ $errors->first('username') }}</p>
                 @endif
             </div>
 
-            <div class="form-input">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Password"/>
+            <div class="mt-2">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" class="form-control"/>
                 @if ($errors->has('password'))
-                    <p class="error-field">{{ $errors->first('password') }}</p>
+                    <p class="text-danger text-center">{{ $errors->first('password') }}</p>
                 @endif
             </div>
 
-            <div class="form-button">
-                <button type="submit">Log in</button>
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary">Log in</button>
             </div>
         </form>
     </main>
-</body>
-</html>
+
+@endsection

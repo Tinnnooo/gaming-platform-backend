@@ -25,6 +25,9 @@ Route::post('/logout', [AdminUserController::class, 'logout'])->name('admin.logo
 
 Route::middleware(['auth:admin_users'])->group(function () {
     Route::get('/dashboard', [AdminUserController::class, 'index_dashboard'])->name('admin.dashboard');
-    Route::get('/admin-users', [AdminUserController::class, 'admin_users']);
-});
+    Route::get('/manage-platform-users', [AdminUserController::class, 'index_platformUsers'])->name('admin.platformUsers');
 
+    Route::get('/manage-platform-users/{username}', [AdminUserController::class, 'detail_platformUser']);
+
+    Route::post('/manage-platform-users/{username}/block', [AdminUserController::class, 'block_platformUser']);
+});

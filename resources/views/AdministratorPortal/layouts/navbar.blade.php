@@ -1,32 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Administrator Portals</title>
+    <nav class="navbar navbar-expand-lg fixed-top bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Administrator Portal</a>
 
-    <link rel="stylesheet" href="./css/AdministratorPortal.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <p>Administrator Portal</p>
-        </div>
+            @if (auth('admin_users')->check())
+                <button class="navbar-toggler" type="button" data-bs-toggle='collapse' data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon "></span>
+                </button>
 
-        <div class="navbar-menu">
-            <div class="user_username">
-                {{ auth('admin_users')->user()->username }}
-            </div>
-            <form action="{{ route('admin.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="logout_button">Logout</button>
-            </form>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a href="/dashboard" class="nav-link {{ request()->is('dashboard') ? 'active' : ''  }}" >Admin Users</a></li>
+                        <li class="nav-item"><a href="/manage-platform-users" class="nav-link {{ request()->is('manage-platform-users*') ? 'active' : ''  }}" >Platform Users</a></li>
+                    </ul>
+                    <div class="d-flex align-items-center gap-4">
+                        <span class="text-white fw-medium fs-5">{{ auth('admin_users')->user()->username }}</span>
+                        <form action="{{ route('admin.logout') }}" class="d-flex" method="post">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-sm ">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            @endif
         </div>
     </nav>
-
-    <main class="dashboard-container">
-        @yield('content')
-    </main>
-</body>
-</html>

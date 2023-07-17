@@ -44,11 +44,13 @@ return [
         'admin_users' => [
             'driver' => 'session',
             'provider' => 'admin_users',
+            'config' => 'session_platform_users',
         ],
 
         'platform_users' => [
             'driver' => 'session',
             'provider' => 'platform_users',
+            'config' => 'session_admin_users',
         ],
     ],
 

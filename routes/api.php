@@ -20,7 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['prefix' => 'v1/auth'], function() {
-    Route::post('/signup', [AuthController::class, 'signup']);
+Route::group(['prefix' => 'v1'], function () {
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('/signup', [AuthController::class, 'signup']);
+        Route::post('/signin', [AuthController::class, 'signin']);
+        Route::post('/signout', [AuthController::class, 'signout']);
+    });
 });
-

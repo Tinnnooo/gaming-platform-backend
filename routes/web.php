@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect('/admin');
 });
 
 
 Route::get('/admin', [AdminUserController::class, 'index'])->name('admin');
 Route::post('/login', [AdminUserController::class, 'login'])->name('admin.login.submit');
-Route::post('/logout', [AdminUserController::class, 'logout'])->name('admin.logout');
+Route::post('/logout', [AdminUserController::class, 'logout'])->name('admin.logout')->middleware('auth:admin_users');
 
 Route::middleware(['auth:admin_users'])->group(function () {
     Route::get('/dashboard', [AdminUserController::class, 'index_dashboard'])->name('admin.dashboard');

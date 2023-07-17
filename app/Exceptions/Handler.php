@@ -2,8 +2,9 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -25,6 +26,20 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (AuthenticationException $e, $request) {
+            if (empty($request->header('Authorization'))) {
+                return response()->json([
+                    'status' => 'unauthenticated',
+                    'message' => 'Missing token'
+                ], 401);
+            };
+
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Invalid token',
+            ], 401);
         });
     }
 }

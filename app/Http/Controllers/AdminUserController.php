@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminUser;
 use App\Models\BlockedUser;
+use App\Models\Game;
+use App\Models\Games;
+use App\Models\GameVersion;
 use App\Models\PlatformUser;
+use App\Models\Score;
 use App\Services\AdminControllerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +98,63 @@ class AdminUserController extends Controller
 
         $user->blocked->delete();
         return back()->with('blockInfo', 'User is unblock.');
+    }
 
+    public function index_manageGames()
+    {
+        $games = Game::with('author', 'gameVersions')->get();
+        return view('AdministratorPortal.manage_games', compact('games')
+    );
+    }
+
+    public function index_manageGameScores()
+    {
+        $games = Game::with('gameVersions.gameScores')->get();
+
+        return view('AdministratorPortal.manage_game_scores', compact('games'));
+    }
+
+    public function delete_gameScore($score_id)
+    {
+        $score = Score::findOrFail($score_id);
+
+        $user = $score->user;
+
+        $user->game_scores -= $score->score;
+        $user->save();
+
+        $score->delete();
+
+        return back()->with('deleteSuccess', 'Score Deleted.');
+    }
+
+    public function reset_gameScores($game_id)
+    {
+        $game = Game::findOrFail($game_id);
+
+        $game->gameVersions->each(function ($version) {
+            $version->gameScores->each(function ($score) {
+                $user = $score->user;
+                $user->game_scores -= $score->score;
+                $user->save();
+            });
+            $version->gameScores()->delete();
+        });
+
+        return back()->with('resetSuccess', 'Game Scores is reset.');
+    }
+
+    public function reset_versionHighScores($version_id){
+        $gameVersion = GameVersion::findOrFail($version_id);
+
+        $gameVersion->gameScores->each(function ($score) {
+            $user = $score->user;
+            $user->game_scores -= $score->score;
+            $user->save();
+        });
+
+        $gameVersion->gameScores()->delete();
+
+        return back()->with('resetSuccess', 'Highscores is reset.');
     }
 }

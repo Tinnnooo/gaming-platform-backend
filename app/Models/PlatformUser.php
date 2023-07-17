@@ -26,4 +26,14 @@ class PlatformUser extends Model
     {
         return $this->hasOne(BlockedUser::class, 'user_id', 'id');
     }
+
+    public function gameScores()
+    {
+        return $this->hasOne(gameScores::class);
+    }
+
+    public function uploadedGames()
+    {
+        return $this->hasMany(Game::class, 'author_id');
+    }
 }

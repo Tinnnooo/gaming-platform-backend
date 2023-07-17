@@ -30,4 +30,12 @@ Route::middleware(['auth:admin_users'])->group(function () {
     Route::get('/manage-platform-users/{username}', [AdminUserController::class, 'detail_platformUser']);
 
     Route::post('/manage-platform-users/{username}/block', [AdminUserController::class, 'block_platformUser']);
+
+    Route::get('/manage-games', [AdminUserController::class, 'index_manageGames']);
+
+    Route::get('/manage-games/game-scores', [AdminUserController::class, 'index_manageGameScores']);
+
+    Route::post('/manage-games/{score_id}/delete', [AdminUserController::class, 'delete_gameScore']);
+    Route::post('/manage-games/{game_id}/reset-scores', [AdminUserController::class, 'reset_gameScores']);
+    Route::post('/manage-games/{version_id}/reset-highscores', [AdminUserController::class, 'reset_versionHighScores']);
 });

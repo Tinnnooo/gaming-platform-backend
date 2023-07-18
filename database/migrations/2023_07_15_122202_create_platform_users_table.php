@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('registered_at')->useCurrent();
             $table->timestamp('last_login_at')->nullable();
-            $table->bigInteger('game_scores')->nullable();
-            $table->bigInteger('uploaded_games')->nullable();
+            $table->bigInteger('game_scores')->nullable()->default(0);
+            $table->bigInteger('uploaded_games')->nullable()->default(0);
         });
     }
 

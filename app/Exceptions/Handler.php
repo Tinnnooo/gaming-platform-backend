@@ -28,18 +28,18 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function (AuthenticationException $e, $request) {
-            if (empty($request->header('Authorization'))) {
-                return response()->json([
-                    'status' => 'unauthenticated',
-                    'message' => 'Missing token'
-                ], 401);
-            };
+        // $this->renderable(function (AuthenticationException $e, $request) {
+        //     if (empty($request->header('Authorization'))) {
+        //         return response()->json([
+        //             'status' => 'unauthenticated',
+        //             'message' => 'Missing token'
+        //         ], 401);
+        //     };
 
-            return response()->json([
-                'status' => 'unauthenticated',
-                'message' => 'Invalid token',
-            ], 401);
-        });
+        //     return response()->json([
+        //         'status' => 'unauthenticated',
+        //         'message' => 'Invalid token',
+        //     ], 401);
+        // });
     }
 }

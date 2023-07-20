@@ -21,10 +21,10 @@ Route::get('/', function () {
 
 Route::get('/admin', [AdminUserController::class, 'index'])->name('admin');
 Route::post('/login', [AdminUserController::class, 'login'])->name('admin.login.submit');
-Route::post('/logout', [AdminUserController::class, 'logout'])->name('admin.logout')->middleware('auth:admin_users');
+Route::post('/logout', [AdminUserController::class, 'logout'])->name('admin.logout')->middleware(['auth:sanctum', 'abilities:admin_user']);
 
-Route::middleware(['auth:admin_users'])->group(function () {
-    Route::get('/dashboard', [AdminUserController::class, 'index_dashboard'])->name('admin.dashboard');
+Route::get('/dashboard', [AdminUserController::class, 'index_dashboard'])->name('admin.dashboard');
+Route::middleware(['auth:sanctum', 'abilities:admin_user'])->group(function () {
     Route::get('/manage-platform-users', [AdminUserController::class, 'index_platformUsers'])->name('admin.platformUsers');
 
     Route::get('/manage-platform-users/{username}', [AdminUserController::class, 'detail_platformUser']);

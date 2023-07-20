@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class AdminUser extends Authenticatable
 {
     use HasFactory, HasApiTokens, Notifiable;
+    protected $guard = 'admin_user';
 
     public $timestamps = false;
 

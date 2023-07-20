@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class PlatformUser extends Authenticatable
 {
     use HasFactory, HasApiTokens, Notifiable;
+    protected $guard = 'platform_user';
 
     public $timestamps = false;
 

@@ -18,13 +18,12 @@ class AdminUserController extends Controller
 
     public function __construct(protected AdminControllerService $adminControllerService)
     {
-
     }
 
     // render login page
     public function index()
     {
-        if(!Auth::guard('admin_users')->check()){
+        if (!Auth::guard('admin_user')->check()) {
             return view('AdministratorPortal.index');
         }
         return redirect()->intended('/dashboard');
@@ -39,32 +38,32 @@ class AdminUserController extends Controller
             'password' => ['required', 'min:5']
         ]);
 
-        if(Auth::guard('admin_users')->attempt($credentials)){
-            $user = Auth::guard('admin_users')->user();
+        if (Auth::guard('admin_user')->attempt($credentials)) {
+            $user = Auth::guard('admin_user')->user();
             $user->last_login_at = now();
             $user->save();
             return redirect()->intended('/dashboard');
         }
 
-            return back()->with('loginError', 'Username or Password is incorrect');
+        return back()->with('loginError', 'Username or Password is incorrect');
     }
 
     // Logout function
     public function logout()
     {
-        Auth::guard('admin_users')->logout();
+        Auth::guard('admin_user')->logout();
         return redirect()->route('admin');
     }
 
     // render dashboard page
     public function index_dashboard()
     {
-        if(Auth::guard('admin_users')->check()){
+        if (Auth::guard('admin_user')->check()) {
             return view('AdministratorPortal.dashboard', [
-                "admin_users" => AdminUser::all()
+                "admin_user" => AdminUser::all()
             ]);
         }
-            return redirect('/');
+        return redirect('/');
     }
 
     public function index_platformUsers()
@@ -74,16 +73,18 @@ class AdminUserController extends Controller
         ]);
     }
 
-    public function detail_platformUser($username){
+    public function detail_platformUser($username)
+    {
         return view('AdministratorPortal.detail_platform_user', [
             'platform_user' => $this->adminControllerService->getUser($username),
         ]);
     }
 
-    public function block_platformUser($username, Request $request){
+    public function block_platformUser($username, Request $request)
+    {
         $user = PlatformUser::where('username', $username)->firstOrFail();
 
-        if(!$user->blocked){
+        if (!$user->blocked) {
             $validator = $request->validate([
                 'reason' => 'required',
             ]);
@@ -103,8 +104,10 @@ class AdminUserController extends Controller
     public function index_manageGames()
     {
         $games = Game::with('author', 'gameVersions')->get();
-        return view('AdministratorPortal.manage_games', compact('games')
-    );
+        return view(
+            'AdministratorPortal.manage_games',
+            compact('games')
+        );
     }
 
     public function index_manageGameScores()
@@ -144,7 +147,8 @@ class AdminUserController extends Controller
         return back()->with('resetSuccess', 'Game Scores is reset.');
     }
 
-    public function reset_versionHighScores($version_id){
+    public function reset_versionHighScores($version_id)
+    {
         $gameVersion = GameVersion::findOrFail($version_id);
 
         $gameVersion->gameScores->each(function ($score) {

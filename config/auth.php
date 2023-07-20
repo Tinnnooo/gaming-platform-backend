@@ -41,16 +41,14 @@ return [
             'provider' => 'users',
         ],
 
-        'admin_users' => [
+        'admin_user' => [
             'driver' => 'session',
             'provider' => 'admin_users',
-            'config' => 'session_platform_users',
         ],
 
-        'platform_users' => [
+        'platform_user' => [
             'driver' => 'session',
             'provider' => 'platform_users',
-            'config' => 'session_admin_users',
         ],
     ],
 

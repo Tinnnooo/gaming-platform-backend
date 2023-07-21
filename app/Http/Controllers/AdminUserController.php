@@ -23,7 +23,7 @@ class AdminUserController extends Controller
     // render login page
     public function index()
     {
-        if (!Auth::guard('admin_user')->check()) {
+        if (!Auth::guard('admin_users')->check()) {
             return view('AdministratorPortal.index');
         }
         return redirect()->intended('/dashboard');
@@ -38,8 +38,8 @@ class AdminUserController extends Controller
             'password' => ['required', 'min:5']
         ]);
 
-        if (Auth::guard('admin_user')->attempt($credentials)) {
-            $user = Auth::guard('admin_user')->user();
+        if (Auth::guard('admin_users')->attempt($credentials)) {
+            $user = Auth::guard('admin_users')->user();
             $user->last_login_at = now();
             $user->save();
             return redirect()->intended('/dashboard');
@@ -51,16 +51,16 @@ class AdminUserController extends Controller
     // Logout function
     public function logout()
     {
-        Auth::guard('admin_user')->logout();
+        Auth::guard('admin_users')->logout();
         return redirect()->route('admin');
     }
 
     // render dashboard page
     public function index_dashboard()
     {
-        if (Auth::guard('admin_user')->check()) {
+        if (Auth::guard('admin_users')->check()) {
             return view('AdministratorPortal.dashboard', [
-                "admin_user" => AdminUser::all()
+                "admin_users" => AdminUser::all()
             ]);
         }
         return redirect('/');

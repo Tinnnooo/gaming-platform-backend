@@ -2,7 +2,7 @@
         <div class="container">
             <a class="navbar-brand" href="/">Administrator Portal</a>
 
-            @if (auth('admin_user')->check())
+            @if (auth('admin_users')->check())
                 <button class="navbar-toggler" type="button" data-bs-toggle='collapse' data-bs-target="#navbarContent"
                     aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon "></span>
@@ -19,7 +19,7 @@
                                 class="nav-link {{ request()->is('manage-games*') ? 'active' : '' }}">Games</a></li>
                     </ul>
                     <div class="d-flex align-items-center gap-4">
-                        <span class="text-white fw-medium fs-5">{{ auth('admin_user ')->user()->username }}</span>
+                        <span class="text-white fw-medium fs-5">{{ auth('admin_users')->user()->username }}</span>
                         <form action="{{ route('admin.logout') }}" class="d-flex" method="post">
                             @csrf
                             <button type="submit" class="btn btn-danger btn-sm ">Logout</button>

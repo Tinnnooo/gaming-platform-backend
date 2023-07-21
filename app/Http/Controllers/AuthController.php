@@ -30,7 +30,7 @@ class AuthController extends Controller
     // signin platform users
     public function signin(SigninRequest $request)
     {
-        if (!Auth::guard('platform_users')->attempt($request->validated())) {
+        if (!auth('platform_users')->once($request->validated())) {
             return $this->respondInvalid('Wrong username or password');
         };
 
@@ -39,7 +39,7 @@ class AuthController extends Controller
 
     public function signout()
     {
-        Auth::guard('platform_users')->user()->currentAccessToken()->delete();
+        auth()->user()->currentAccessToken()->delete();
 
         return $this->respondOk();
     }

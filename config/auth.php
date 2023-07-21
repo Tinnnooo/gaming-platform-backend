@@ -41,12 +41,12 @@ return [
             'provider' => 'users',
         ],
 
-        'admin_user' => [
+        'admin_users' => [
             'driver' => 'session',
             'provider' => 'admin_users',
         ],
 
-        'platform_user' => [
+        'platform_users' => [
             'driver' => 'session',
             'provider' => 'platform_users',
         ],

@@ -18,8 +18,9 @@ class Game extends Model
         'thumbnail',
         'slug',
         'author_id',
-        'status',
     ];
+
+    protected $hidden = ['status'];
 
     public function author()
     {
@@ -29,6 +30,11 @@ class Game extends Model
     public function gameVersions()
     {
         return $this->hasMany(GameVersion::class);
+    }
+
+    public function latestVersion()
+    {
+        return $this->hasOne(GameVersion::class)->latest('version_timestamp');
     }
 
     protected static function booted()

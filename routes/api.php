@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GamesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +26,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/signup', [AuthController::class, 'signup']);
         Route::post('/signin', [AuthController::class, 'signin']);
         Route::post('/signout', [AuthController::class, 'signout'])->middleware('auth:sanctum');
+    });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('games', [GamesController::class, 'paginatedGames']);
+        Route::post('games', [GamesController::class, 'uploadGame']);
     });
 });

@@ -26,22 +26,41 @@ class GamesController extends Controller
         $sortBy = $request->query('sortBy', 'title');
         $sortDir = $request->query('sortDir', 'asc');
 
-        $validSortFields = ['title', 'popular'];
-        if(!in_array($sortBy, $validSortFields)){
+        $validSortFields = ['title', 'popular', 'uploaddate'];
+        if (!in_array($sortBy, $validSortFields)) {
             $sortBy = 'title';
         }
 
-        $query = Game::query();
+        $query = Game::has('gameVersions');
 
         if ($sortBy === 'popular') {
             $query->with(['gameVersions' => function ($query) {
-                $query->withCount('gameScores as scoreCount');
+                $query->select('game_id', DB::raw('count(*) as score_count'))->leftJoin('gameScores', 'game_versions.id', '=', 'gameScores.game_version_id')->groupBy('game_id');
             }]);
+
+            $query->having('gameVersions.score_count', '>', 0);
+            $query->orderBy('gameVersions.score_count', $sortDir);
+        } else if ($sortBy === 'uploaddate') {
+            $query->with('latestVersion');
+            $games = $query->get();
+
+            if ($sortDir === 'desc') {
+                $sorted = $games->sortByDesc('latestVersion.version_timestamp');
+            } else {
+                $sorted = $games->sortBy('latestVersion.version_timestamp');
+            }
+
+            $paginatedResults = $sorted->paginate($size, ['*'], 'page', $page);
+
+
+            return response()->json([
+                $paginatedResults
+            ]);
         } else {
             $query->orderBy($sortBy, $sortDir);
         }
 
-        $games = $query->paginate($size,['*'] ,'page', $page);
+        $games = $query->paginate($size, ['*'], 'page', $page);
 
         return $this->respondSuccess(new PaginateGamesCollection($games));
     }

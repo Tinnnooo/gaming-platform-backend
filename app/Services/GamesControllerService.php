@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Exceptions\SlugTakenException;
 use App\Models\Game;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
+
 
 class GamesControllerService
 {
@@ -13,7 +15,7 @@ class GamesControllerService
     {
         DB::beginTransaction();
 
-        try{
+        try {
             $game = Game::create([
                 'title' => $validator['title'],
                 'description' => $validator['description'],
@@ -22,15 +24,10 @@ class GamesControllerService
             DB::commit();
 
             return $game;
-        } catch (ValidationException $e)
-        {
+        } catch (QueryException $e) {
             DB::rollBack();
-                return response()->json([
-                    'status' => 'invalid',
-                    'slug' => 'Game title already exist'
-                ], 400);
-        } catch (Exception $e)
-        {
+            throw new SlugTakenException;
+        } catch (Exception $e) {
             DB::rollBack();
             throw new Exception('Something went wrong.');
         }

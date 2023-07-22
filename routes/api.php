@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GamesController;
+use App\Http\Controllers\PlatformUsersController;
+use App\Http\Controllers\ScoresController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,13 +25,32 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'auth'], function () {
+
+        // Authentication route
         Route::post('/signup', [AuthController::class, 'signup']);
         Route::post('/signin', [AuthController::class, 'signin']);
         Route::post('/signout', [AuthController::class, 'signout'])->middleware('auth:sanctum');
     });
 
     Route::middleware('auth:sanctum')->group(function () {
+
+
+        // scores route
+        Route::get('/games/{slug}/scores', [ScoresController::class, 'getScores']);
+        });
+
+        // games route
         Route::get('games', [GamesController::class, 'paginatedGames']);
         Route::post('games', [GamesController::class, 'uploadGame']);
-    });
+
+        Route::get('games/{slug}', [GamesController::class, 'gameDetail']);
+        Route::post('games/{slug}/upload', [GamesController::class, 'uploadGameFile']);
+
+        Route::get('/games/{slug}/{version}', [GamesController::class, 'serveGame']);
+        Route::put('/games/{slug}', [GamesController::class, 'editGame']);
+        Route::delete('/games/{slug}', [GamesController::class, 'deleteGame']);
+
+        // users route
+        Route::get('users/{username}', [PlatformUsersController::class, 'getUser']);
+
 });

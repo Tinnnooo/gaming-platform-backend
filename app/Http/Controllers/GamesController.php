@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UploadGameRequest;
-use App\Http\Resources\PaginateGamesCollection;
+use App\Http\Requests\EditGameRequest;
 use App\Models\Game;
-use App\Services\GamesControllerService;
 use App\Traits\RespondHttp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\GamesResource;
+use App\Http\Resources\GamesCollection;
+use App\Http\Requests\GameUploadRequest;
+use App\Http\Requests\UploadGameRequest;
+use App\Services\GamesControllerService;
+use App\Http\Resources\DetailGameResource;
+use Illuminate\Support\Facades\Response;
 
 class GamesController extends Controller
 {
@@ -18,53 +23,15 @@ class GamesController extends Controller
     {
     }
 
+    // get games (paginate)
     public function paginatedGames(Request $request)
     {
-        $page = $request->query('page', 0);
-        $size = max($request->query('size', 10), 1);
+        $games = $this->gamesControllerService->paginatedGames($request);
 
-        $sortBy = $request->query('sortBy', 'title');
-        $sortDir = $request->query('sortDir', 'asc');
-
-        $validSortFields = ['title', 'popular', 'uploaddate'];
-        if (!in_array($sortBy, $validSortFields)) {
-            $sortBy = 'title';
-        }
-
-        $query = Game::has('gameVersions');
-
-        if ($sortBy === 'popular') {
-            $query->with(['gameVersions' => function ($query) {
-                $query->select('game_id', DB::raw('count(*) as score_count'))->leftJoin('gameScores', 'game_versions.id', '=', 'gameScores.game_version_id')->groupBy('game_id');
-            }]);
-
-            $query->having('gameVersions.score_count', '>', 0);
-            $query->orderBy('gameVersions.score_count', $sortDir);
-        } else if ($sortBy === 'uploaddate') {
-            $query->with('latestVersion');
-            $games = $query->get();
-
-            if ($sortDir === 'desc') {
-                $sorted = $games->sortByDesc('latestVersion.version_timestamp');
-            } else {
-                $sorted = $games->sortBy('latestVersion.version_timestamp');
-            }
-
-            $paginatedResults = $sorted->paginate($size, ['*'], 'page', $page);
-
-
-            return response()->json([
-                $paginatedResults
-            ]);
-        } else {
-            $query->orderBy($sortBy, $sortDir);
-        }
-
-        $games = $query->paginate($size, ['*'], 'page', $page);
-
-        return $this->respondSuccess(new PaginateGamesCollection($games));
+        return $this->respondSuccess(new GamesCollection($games));
     }
 
+    // upload game
     public function uploadGame(UploadGameRequest $request)
     {
         $game = $this->gamesControllerService->post($request->validated());
@@ -73,5 +40,47 @@ class GamesController extends Controller
             'status' => 'success',
             'slug' => $game->slug,
         ]);
+    }
+
+    // get game by slug
+    public function gameDetail($slug)
+    {
+        $game = $this->gamesControllerService->getGameBySlug($slug);
+
+        return $this->respondSuccess(new DetailGameResource($game));
+    }
+
+    public function uploadGameFile(GameUploadRequest $request, $slug)
+    {
+        $this->gamesControllerService->uploadGame($request->validated(), $slug);
+
+        return $this->respondOk();
+    }
+
+    // serve game
+    public function serveGame($slug, $version){
+        $gamePath = 'games/' . $slug . '/' . $version;
+
+        $gameFile = $this->gamesControllerService->serveGame($gamePath);
+
+       return Response::file($gameFile);
+    }
+
+    // edit game
+    public function editGame(EditGameRequest $request, $slug)
+    {
+        $game = $this->gamesControllerService->getGameBySlugAndUser($slug, auth()->user()->id);
+        $game->update($request->validated());
+
+        return $this->respondOk();
+    }
+
+    // delete game
+    public function deleteGame($slug)
+    {
+        $game = $this->gamesControllerService->getGameBySlugAndUser($slug, auth()->user()->id);
+        $this->gamesControllerService->deleteGame($game);
+
+        return response()->json(null, 204);
     }
 }

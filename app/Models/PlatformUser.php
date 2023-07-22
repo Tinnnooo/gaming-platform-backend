@@ -28,9 +28,9 @@ class PlatformUser extends Authenticatable
         return $this->hasOne(BlockedUser::class, 'user_id', 'id');
     }
 
-    public function gameScores()
+    public function scores()
     {
-        return $this->hasOne(gameScores::class);
+        return $this->hasMany(Score::class, 'user_id', 'id');
     }
 
     public function uploadedGames()

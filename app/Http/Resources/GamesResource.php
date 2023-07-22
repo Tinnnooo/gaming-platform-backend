@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PaginateGamesResource extends JsonResource
+class GamesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,7 +18,7 @@ class PaginateGamesResource extends JsonResource
             'slug' => $this->slug,
             'title' => $this->title,
             'description' => $this->title,
-            'thumbnail' => $this->thumbnail,
+            'thumbnail' => $this->thumbnail ?? null,
             'uploadTimestamp' => $this->latestVersion->version_timestamp,
             'author' => $this->author->username,
             'scoreCount' => $this->gameVersions->sum(function ($version) {

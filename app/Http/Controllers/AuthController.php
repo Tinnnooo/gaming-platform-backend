@@ -30,11 +30,9 @@ class AuthController extends Controller
     // signin platform users
     public function signin(SigninRequest $request)
     {
-        if (!auth('platform_users')->once($request->validated())) {
-            return $this->respondInvalid('Wrong username or password');
-        };
+        $user = $this->authControllerService->signin($request->validated());
 
-        return $this->respondSuccess(new TokenResource(auth('platform_users')->user()));
+        return $this->respondSuccess(new TokenResource($user));
     }
 
     public function signout()

@@ -25,6 +25,6 @@ class Score extends Model
 
     public function gameVersion()
     {
-        return $this->belongsTo(GameVersion::class);
+        return $this->belongsTo(GameVersion::class, 'game_version_id', 'id');
     }
 }

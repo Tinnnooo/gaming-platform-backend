@@ -17,9 +17,9 @@ class ScoresResource extends JsonResource
         $highestScore = $this->gameScores->max('score');
         $highestScoreEntry = $this->gameScores->firstWhere('score', $highestScore);
         return [
-            'username' => $highestScoreEntry->user->username,
-            'score' => $highestScore,
-            'timestamp' => $highestScoreEntry->timestamp,
+            'username' => $highestScoreEntry->user->username ?? null,
+            'score' => $highestScore ?? null,
+            'timestamp' => $highestScoreEntry->timestamp ?? null,
         ];
     }
 }

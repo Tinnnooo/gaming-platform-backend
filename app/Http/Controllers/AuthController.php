@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\BlockedUserException;
 use App\Http\Requests\SigninRequest;
 use App\Http\Requests\SignupRequest;
 use App\Http\Resources\TokenResource;
 use App\Services\AuthControllerService;
 use App\Traits\RespondHttp;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -31,6 +30,9 @@ class AuthController extends Controller
     public function signin(SigninRequest $request)
     {
         $user = $this->authControllerService->signin($request->validated());
+        if($user->blocked){
+            return $this->respondBlocked($user);
+        }
 
         return $this->respondSuccess(new TokenResource($user));
     }

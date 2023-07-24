@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
+use App\Exceptions\BlockedUserException;
 use App\Exceptions\ServerBusyException;
 use App\Exceptions\UnauthenticatedException;
 use App\Models\PlatformUser;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\QueryException;
 
 class AuthControllerService
 {
@@ -37,7 +35,7 @@ class AuthControllerService
     {
         DB::beginTransaction();
 
-        // try{
+        try{
             if(!auth('platform_users')->once($userData)){
                 throw new UnauthenticatedException('Wrong username or password');
             }
@@ -48,10 +46,10 @@ class AuthControllerService
 
             DB::commit();
             return $user;
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
+        } catch (\Exception $e) {
+            DB::rollBack();
 
-        //     throw new  ServerBusyException;
-        // }
+            throw new ServerBusyException;
+        }
     }
 }

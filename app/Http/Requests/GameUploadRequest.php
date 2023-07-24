@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GameUploadRequest extends FormRequest
@@ -24,5 +26,10 @@ class GameUploadRequest extends FormRequest
         return [
             'zipfile' => 'required|mimes:zip|max:2048',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator);
     }
 }

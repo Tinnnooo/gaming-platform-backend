@@ -6,7 +6,7 @@ use App\Exceptions\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UploadGameRequest extends FormRequest
+class StoreScoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class UploadGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|min:3|max:60',
-            'description' => 'required|min:0|max:200',
+            'score' => 'required|regex:/^[0-9]+$/',
         ];
     }
 

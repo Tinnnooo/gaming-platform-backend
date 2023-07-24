@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminLoginRequest;
 use App\Models\AdminUser;
 use App\Models\BlockedUser;
 use App\Models\Game;
@@ -31,14 +32,9 @@ class AdminUserController extends Controller
 
 
     // login function
-    public function login(Request $request)
+    public function login(AdminLoginRequest $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required', 'min:5']
-        ]);
-
-        if (Auth::guard('admin_users')->attempt($credentials)) {
+        if (Auth::guard('admin_users')->attempt($request->validated())) {
             $user = Auth::guard('admin_users')->user();
             $user->last_login_at = now();
             $user->save();

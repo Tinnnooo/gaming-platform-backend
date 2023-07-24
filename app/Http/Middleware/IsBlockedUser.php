@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\BlockedUserException;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ForceJsonResponse
+class IsBlockedUser
 {
     /**
      * Handle an incoming request.
@@ -15,10 +16,11 @@ class ForceJsonResponse
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->isMethod('post') || $request->isMethod('put')){
-            $request->headers->set('Accept', 'application/json');
-        }
+        if(auth()->check() && auth()->user()->blocked){
+            auth()->user()->currentAccessToken()->delete();
 
+            throw new BlockedUserException;
+        }
         return $next($request);
     }
 }

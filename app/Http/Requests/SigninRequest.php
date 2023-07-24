@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SigninRequest extends FormRequest
@@ -25,5 +27,10 @@ class SigninRequest extends FormRequest
             'username' => 'required|min:4|max:60',
             'password' => 'required|min:8|max:32',
         ];
+    }
+
+    protected function failedValidation($validator)
+    {
+        throw new ValidationException($validator);
     }
 }

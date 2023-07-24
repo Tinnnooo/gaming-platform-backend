@@ -23,4 +23,13 @@ trait RespondHttp
             'status' => 'success',
         ], $status);
     }
+
+    public function respondBlocked($user)
+    {
+        return response()->json([
+            'status' => 'blocked',
+            'message' => 'You have been blocked by an administrator.',
+            'reason' => $user->blocked->reason,
+        ], 401);
+    }
 }

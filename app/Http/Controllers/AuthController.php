@@ -17,6 +17,17 @@ class AuthController extends Controller
     {
     }
 
+    // get user auth
+    public function me()
+    {
+        $user = auth()->user();
+        return $this->respondSuccess([
+            'username' => $user->username,
+            'game_scores' => $user->game_scores,
+            'uploaded_games' => $user->uploaded_games,
+        ]);
+    }
+
     // signup platform users
     public function signup(SignupRequest $request)
     {
@@ -30,7 +41,7 @@ class AuthController extends Controller
     public function signin(SigninRequest $request)
     {
         $user = $this->authControllerService->signin($request->validated());
-        if($user->blocked){
+        if ($user->blocked) {
             return $this->respondBlocked($user);
         }
 

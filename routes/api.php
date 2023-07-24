@@ -33,6 +33,9 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
+        //me route
+        Route::get('/me', [AuthController::class, 'me']);
+
         // scores route
         Route::get('/games/{slug}/scores', [ScoresController::class, 'getScores']);
         Route::post('/games/{slug}/scores', [ScoresController::class, 'storeScore']);
@@ -49,7 +52,5 @@ Route::group(['prefix' => 'v1'], function () {
 
         // users route
         Route::get('users/{username}', [PlatformUsersController::class, 'getUser']);
-        });
+    });
 });
-
-

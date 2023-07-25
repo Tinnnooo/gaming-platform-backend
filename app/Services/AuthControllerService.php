@@ -33,9 +33,6 @@ class AuthControllerService
 
     public function signin($userData)
     {
-        DB::beginTransaction();
-
-        try{
             if(!auth('platform_users')->once($userData)){
                 throw new UnauthenticatedException('Wrong username or password');
             }
@@ -44,12 +41,6 @@ class AuthControllerService
             $user->last_login_at = now();
             $user->save();
 
-            DB::commit();
             return $user;
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            throw new ServerBusyException;
-        }
     }
 }

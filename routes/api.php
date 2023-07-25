@@ -22,13 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'auth'], function () {
 
         // Authentication route
-        Route::post('/signup', [AuthController::class, 'signup']);
         Route::post('/signin', [AuthController::class, 'signin']);
+        Route::post('/signup', [AuthController::class, 'signup']);
         Route::post('/signout', [AuthController::class, 'signout'])->middleware('auth:sanctum');
     });
 

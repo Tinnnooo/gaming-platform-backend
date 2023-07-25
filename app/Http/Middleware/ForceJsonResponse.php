@@ -15,9 +15,7 @@ class ForceJsonResponse
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->isMethod('post') || $request->isMethod('put')){
-            $request->headers->set('Accept', 'application/json');
-        }
+        $request->headers->set('Accept', 'application/json');
 
         return $next($request);
     }

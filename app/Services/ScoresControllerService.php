@@ -65,6 +65,10 @@ class ScoresControllerService
                 'timestamp' => now(),
             ]);
 
+            $user = auth()->user();
+            $user->game_scores += $score['score'];
+            $user->save();
+
             DB::commit();
 
             return;

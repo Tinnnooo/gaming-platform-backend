@@ -89,6 +89,11 @@ class GamesControllerService
                 'description' => $validator['description'],
                 'author_id' => auth()->user()->id
             ]);
+
+            $user = auth()->user();
+            $user->uploaded_games += 1;
+            $user->save();
+
             DB::commit();
 
             return $game;

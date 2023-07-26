@@ -24,7 +24,7 @@ class GameUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'zipfile' => 'required|mimes:zip|max:2048',
+            'zipfile' => 'required|mimes:zip|max:4096',
         ];
     }
 

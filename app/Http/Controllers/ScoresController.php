@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\RespondHttp;
 use App\Http\Requests\StoreScoreRequest;
-use App\Http\Resources\GameScoresCollection;
-use App\Http\Resources\GameScoresResource;
 use App\Services\GamesControllerService;
 use App\Services\ScoresControllerService;
-use App\Traits\RespondHttp;
-use Illuminate\Http\Request;
 
 class ScoresController extends Controller
 {
@@ -18,11 +15,16 @@ class ScoresController extends Controller
     {
 
     }
+
     public function getScores($slug)
     {
-        $game = $this->gamesControllerService->getGameBySlug($slug);
+        // Find the game by slug with its versions and scores
+        $game = $this->scoresControllerService->getGameBySlugWithScore($slug);
 
-        return $this->respondSuccess(new GameScoresResource($game));
+        $highScores = $this->scoresControllerService->collectScores($game);
+
+        // Return the response
+        return $this->respondSuccess($highScores);
     }
 
     public function storeScore(StoreScoreRequest $request, $slug)

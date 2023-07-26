@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EditGameRequest;
+use App\Exceptions\NotFoundException;
 use App\Models\Game;
 use App\Traits\RespondHttp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use App\Http\Resources\GamesResource;
+use App\Http\Requests\EditGameRequest;
 use App\Http\Resources\GamesCollection;
 use App\Http\Requests\GameUploadRequest;
 use App\Http\Requests\UploadGameRequest;
 use App\Services\GamesControllerService;
-use App\Http\Resources\DetailGameResource;
 use Illuminate\Support\Facades\Response;
+use App\Http\Resources\DetailGameResource;
 
 class GamesController extends Controller
 {
@@ -59,11 +61,20 @@ class GamesController extends Controller
 
     // serve game
     public function serveGame($slug, $version){
-        $gamePath = 'games/' . $slug . '/' . $version;
+        $gamePath = 'games/' . $slug . '/' . $version . '/index.html';
+        $filePath = public_path($gamePath);
 
-        $gameFile = $this->gamesControllerService->serveGame($gamePath);
+        if (File::exists($filePath)) {
+            $content = File::get($filePath);
+            return response($content)->header('Content-Type', 'text/html');
+        }
 
-       return Response::file($gameFile);
+        throw new NotFoundException('Game files not found.');
+
+        // $gameFile = $this->gamesControllerService->serveGame($gamePath);
+
+
+    //    return Response::file($gameFile);
     }
 
     // edit game

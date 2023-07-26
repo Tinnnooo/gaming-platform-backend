@@ -13,6 +13,7 @@ use App\Exceptions\ServerBusyException;
 use Illuminate\Database\QueryException;
 use App\Exceptions\ForbiddenAccessException;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamesControllerService
@@ -182,9 +183,9 @@ class GamesControllerService
     public function serveGame($gamePath)
     {
         if(File::exists(public_path($gamePath))){
-            $indexHtmlPath = public_path($gamePath . '/index.html');
+            $indexHtmlPath = public_path($gamePath);
             if(File::exists($indexHtmlPath)){
-                return $indexHtmlPath;
+                return new BinaryFileResponse($indexHtmlPath);
             }
         }
 

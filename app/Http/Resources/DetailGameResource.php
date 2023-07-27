@@ -17,7 +17,7 @@ class DetailGameResource extends JsonResource
         return [
             'slug' => $this->slug,
             'title' => $this->title,
-            'description' => $this->title,
+            'description' => $this->description,
             'thumbnail' => $this->thumbnail ?? null,
             'uploadTimestamp' => $this->latestVersion->version_timestamp ?? null,
             'author' => $this->author->username,

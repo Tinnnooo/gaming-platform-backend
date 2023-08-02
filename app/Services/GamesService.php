@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class GamesControllerService
+class GamesService
 {
     public function getGameBySlug($slug)
     {

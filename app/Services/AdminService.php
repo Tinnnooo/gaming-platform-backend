@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\PlatformUser;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AdminControllerService
+class AdminService
 {
     public function getUser($username)
     {

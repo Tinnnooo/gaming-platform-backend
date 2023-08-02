@@ -2,14 +2,13 @@
 
 namespace App\Services;
 
-use App\Exceptions\BlockedUserException;
 use App\Exceptions\ServerBusyException;
 use App\Exceptions\UnauthenticatedException;
 use App\Models\PlatformUser;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class AuthControllerService
+class AuthService
 {
     public function signup($validator)
     {

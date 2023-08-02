@@ -6,18 +6,17 @@ use App\Http\Requests\AdminLoginRequest;
 use App\Models\AdminUser;
 use App\Models\BlockedUser;
 use App\Models\Game;
-use App\Models\Games;
 use App\Models\GameVersion;
 use App\Models\PlatformUser;
 use App\Models\Score;
-use App\Services\AdminControllerService;
+use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminUserController extends Controller
 {
 
-    public function __construct(protected AdminControllerService $adminControllerService)
+    public function __construct(protected AdminService $adminService)
     {
     }
 

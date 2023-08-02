@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\NotFoundException;
-use App\Models\Game;
 use App\Traits\RespondHttp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use App\Http\Resources\GamesResource;
 use App\Http\Requests\EditGameRequest;
 use App\Http\Resources\GamesCollection;
 use App\Http\Requests\GameUploadRequest;
 use App\Http\Requests\UploadGameRequest;
-use App\Services\GamesControllerService;
+use App\Services\GamesService;
 use Illuminate\Support\Facades\Response;
 use App\Http\Resources\DetailGameResource;
 
@@ -21,14 +19,14 @@ class GamesController extends Controller
 {
     use RespondHttp;
 
-    public function __construct(protected GamesControllerService $gamesControllerService)
+    public function __construct(protected GamesService $gamesService)
     {
     }
 
     // get games (paginate)
     public function paginatedGames(Request $request)
     {
-        $games = $this->gamesControllerService->paginatedGames($request);
+        $games = $this->gamesService->paginatedGames($request);
 
         return $this->respondSuccess(new GamesCollection($games));
     }
@@ -36,7 +34,7 @@ class GamesController extends Controller
     // upload game
     public function uploadGame(UploadGameRequest $request)
     {
-        $game = $this->gamesControllerService->post($request->validated());
+        $game = $this->gamesService->post($request->validated());
 
         return $this->respondSuccess([
             'status' => 'success',
@@ -47,14 +45,14 @@ class GamesController extends Controller
     // get game by slug
     public function gameDetail($slug)
     {
-        $game = $this->gamesControllerService->getGameBySlug($slug);
+        $game = $this->gamesService->getGameBySlug($slug);
 
         return $this->respondSuccess(new DetailGameResource($game));
     }
 
     public function uploadGameFile(GameUploadRequest $request, $slug)
     {
-        $this->gamesControllerService->uploadGame($request->validated(), $slug);
+        $this->gamesService->uploadGame($request->validated(), $slug);
 
         return $this->respondOk();
     }
@@ -71,7 +69,7 @@ class GamesController extends Controller
 
         throw new NotFoundException('Game files not found.');
 
-        // $gameFile = $this->gamesControllerService->serveGame($gamePath);
+        // $gameFile = $this->gamesService->serveGame($gamePath);
 
 
     //    return Response::file($gameFile);
@@ -80,7 +78,7 @@ class GamesController extends Controller
     // edit game
     public function editGame(EditGameRequest $request, $slug)
     {
-        $game = $this->gamesControllerService->getGameBySlugAndUser($slug, auth()->user()->id);
+        $game = $this->gamesService->getGameBySlugAndUser($slug, auth()->user()->id);
         $game->update($request->validated());
 
         return $this->respondOk();
@@ -89,8 +87,8 @@ class GamesController extends Controller
     // delete game
     public function deleteGame($slug)
     {
-        $game = $this->gamesControllerService->getGameBySlugAndUser($slug, auth()->user()->id);
-        $this->gamesControllerService->deleteGame($game);
+        $game = $this->gamesService->getGameBySlugAndUser($slug, auth()->user()->id);
+        $this->gamesService->deleteGame($game);
 
         return response()->json(null, 204);
     }

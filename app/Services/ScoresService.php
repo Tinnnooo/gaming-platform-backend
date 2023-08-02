@@ -8,7 +8,7 @@ use App\Models\Game;
 use App\Models\Score;
 use Illuminate\Support\Facades\DB;
 
-class ScoresControllerService
+class ScoresService
 {
     public function getGameBySlugWithScore($slug)
     {

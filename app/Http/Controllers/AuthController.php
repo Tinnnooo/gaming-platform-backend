@@ -6,14 +6,14 @@ use App\Exceptions\BlockedUserException;
 use App\Http\Requests\SigninRequest;
 use App\Http\Requests\SignupRequest;
 use App\Http\Resources\TokenResource;
-use App\Services\AuthControllerService;
+use App\Services\AuthService;
 use App\Traits\RespondHttp;
 
 class AuthController extends Controller
 {
     use RespondHttp;
 
-    public function __construct(protected AuthControllerService $authControllerService)
+    public function __construct(protected AuthService $authService)
     {
     }
 
@@ -31,7 +31,7 @@ class AuthController extends Controller
     // signup platform users
     public function signup(SignupRequest $request)
     {
-        $user = $this->authControllerService->signup($request->validated());
+        $user = $this->authService->signup($request->validated());
 
         return $this->respondSuccess(new TokenResource($user));
     }
@@ -40,7 +40,7 @@ class AuthController extends Controller
     // signin platform users
     public function signin(SigninRequest $request)
     {
-        $user = $this->authControllerService->signin($request->validated());
+        $user = $this->authService->signin($request->validated());
         if ($user->blocked) {
             return $this->respondBlocked($user);
         }

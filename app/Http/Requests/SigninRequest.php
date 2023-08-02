@@ -25,7 +25,7 @@ class SigninRequest extends FormRequest
     {
         return [
             'username' => 'required|min:4|max:60',
-            'password' => 'required|min:8|max:32',
+            'password' => 'required|min:8|max:65536',
         ];
     }
 

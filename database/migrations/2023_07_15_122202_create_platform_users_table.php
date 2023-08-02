@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('platform_users', function (Blueprint $table) {
             $table->id();
             $table->string('username');
-            $table->string('password');
+            $table->text('password');
             $table->timestamp('registered_at')->useCurrent();
             $table->timestamp('last_login_at')->nullable();
             $table->bigInteger('game_scores')->nullable()->default(0);
